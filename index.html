@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>I know a spot</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="map"></div>
+
+  <div class="overlay-top">
+    <h1>I know a spot</h1>
+    <button id="addBtn">➕ Add Spot</button>
+  </div>
+
+  <div id="formContainer">
+    <h2>Voeg een Chill Spot toe</h2>
+    <input type="text" id="name" placeholder="Naam van de spot" required />
+    <textarea id="description" placeholder="Beschrijving" required></textarea>
+    <input id="autocomplete" type="text" placeholder="Typ een locatie" autocomplete="off" required />
+    <input type="hidden" id="lat" />
+    <input type="hidden" id="lng" />
+    <button id="submitBtn">Toevoegen</button>
+    <div id="formMsg"></div>
+  </div>
+
+  <script src="main.js" defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDs-2R2Fsqb_JUa98FPgo1hIOu5_GEf0NE&libraries=places&callback=initMap" async defer></script>
+</body>
+</html>
