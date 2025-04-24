@@ -1,19 +1,49 @@
-let map, autocomplete;
+// main.js
+
+// 1) Hier zet je alle door jou goedgekeurde spots (met manual address)
+const approvedSpots = [
+  {
+    name: 'Grote Markt Brussel',
+    description: 'Prachtige historische spot in hartje Brussel.',
+    lat: 50.8466,
+    lng: 4.3528,
+    photo: 'https://www.27vakantiedagen.nl/wp-content/uploads/2021/01/belgie-brussel-grote-markt.jpg',
+    address: 'Grote Markt 1, 1000 Brussel, België'
+  },
+  {
+    name: 'Citadelpark Gent',
+    description: 'Rustige plek bij het water en veel groen.',
+    lat: 51.0520,
+    lng: 3.7174,
+    photo: 'https://link-naar-foto-2.jpg',
+    address: 'Citadelpark, 9000 Gent, België'
+  }
+  // … voeg hier je volgende goedgekeurde spots toe …
+];
+
+let map, autocomplete, infoWindow;
 
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: 50.8503, lng: 4.3517 },
     zoom: 10,
-    minZoom: 2,
-    restriction: {
-      latLngBounds: { north: 85, south: -85, west: -179.999, east: 179.999 },
-      strictBounds: false
-    }
+    minZoom: 2
   });
 
-  // Initialize Places Autocomplete
-  const input = document.getElementById("autocomplete");
-  autocomplete = new google.maps.places.Autocomplete(input);
+  infoWindow = new google.maps.InfoWindow();
+
+  // Sluit de infowindow bij een klik op de kaart
+  map.addListener("click", () => {
+    infoWindow.close();
+  });
+
+  // Voeg alleen je manueel goedgekeurde spots toe
+  approvedSpots.forEach(addMarker);
+
+  // Autocomplete setup voor het formulier (Formspree)
+  autocomplete = new google.maps.places.Autocomplete(
+    document.getElementById("autocomplete")
+  );
   autocomplete.bindTo("bounds", map);
   autocomplete.addListener("place_changed", () => {
     const place = autocomplete.getPlace();
@@ -21,47 +51,58 @@ function initMap() {
     document.getElementById("lat").value = place.geometry.location.lat();
     document.getElementById("lng").value = place.geometry.location.lng();
   });
-
-  // Load saved spots
-  const spots = JSON.parse(localStorage.getItem("spots")) || [];
-  spots.forEach(addMarker);
 }
 
-function addMarker({ name, description, lat, lng }) {
+function addMarker(spot) {
   const marker = new google.maps.Marker({
-    position: { lat, lng },
+    position: { lat: spot.lat, lng: spot.lng },
     map,
-    title: name
+    title: spot.name
   });
-  const info = new google.maps.InfoWindow({
-    content: `<strong>${name}</strong><br>${description}`
+
+  marker.addListener("click", () => {
+    // Bouw custom InfoWindow-content
+    let content = `<div class="info-window">`;
+    if (spot.photo) {
+      content += `
+        <a href="${spot.photo}" target="_blank" rel="noopener">
+          <img src="${spot.photo}" class="info-img" alt="${spot.name}">
+        </a>
+      `;
+    }
+    content += `<h3>${spot.name}</h3>`;
+    content += `<p>${spot.description}</p>`;
+
+    if (spot.address) {
+      // Link opent navigatie naar lat,lng in Google Maps
+      const navUrl =
+        `https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}`;
+      content += `
+        <p class="address">
+          <a href="${navUrl}" target="_blank" rel="noopener">
+            ${spot.address}
+          </a>
+        </p>
+      `;
+    }
+
+    content += `</div>`;
+
+    infoWindow.setContent(content);
+    infoWindow.open(map, marker);
   });
-  marker.addListener("click", () => info.open(map, marker));
 }
 
-// DOM interactions
 window.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("addBtn").addEventListener("click", () => {
-    document.getElementById("formContainer").classList.toggle("show");
-  });
+  // Form toggle logic
+  const addBtn       = document.getElementById("addBtn");
+  const formContainer= document.getElementById("formContainer");
+  const closeForm    = document.getElementById("closeForm");
 
-  document.getElementById("submitBtn").addEventListener("click", () => {
-    const name = document.getElementById("name").value.trim();
-    const desc = document.getElementById("description").value.trim();
-    const lat = parseFloat(document.getElementById("lat").value);
-    const lng = parseFloat(document.getElementById("lng").value);
-    const msg = document.getElementById("formMsg");
-    if (!name || !desc || isNaN(lat) || isNaN(lng)) {
-      msg.textContent = "❗ Vul alle velden in en kies een geldige locatie.";
-      return;
-    }
-    const spots = JSON.parse(localStorage.getItem("spots")) || [];
-    spots.push({ name, description: desc, lat, lng });
-    localStorage.setItem("spots", JSON.stringify(spots));
-    addMarker({ name, description: desc, lat, lng });
-    msg.textContent = "✅ Spot toegevoegd!";
-    document.getElementById("name").value = "";
-    document.getElementById("description").value = "";
-    document.getElementById("autocomplete").value = "";
+  addBtn.addEventListener("click", () => {
+    formContainer.style.display = "block";
+  });
+  closeForm.addEventListener("click", () => {
+    formContainer.style.display = "none";
   });
 });

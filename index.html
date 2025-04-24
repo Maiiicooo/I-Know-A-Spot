@@ -5,6 +5,74 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>I know a spot</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Fullscreen kaart */
+    html, body { margin:0; padding:0; height:100%; overflow:hidden; font-family:sans-serif; }
+    #map { position:absolute; top:0; left:0; width:100%; height:100%; z-index:0; }
+
+    /* Header */
+    .overlay-top {
+      position:absolute; top:0; left:0; width:100%;
+      background:#000; color:#fff; text-align:center;
+      padding:1rem 0; z-index:10;
+    }
+    .overlay-top button {
+      background:#000; color:#fff; border:1px solid #fff;
+      border-radius:6px; padding:0.5rem 1rem; cursor:pointer;
+      margin-left:1rem;
+    }
+
+    /* Compact formulier-overlay */
+    #formContainer {
+      position:absolute;
+      top:50%; left:50%;
+      transform:translate(-50%,-50%);
+      background:rgba(0,0,0,0.9);
+      color:#fff;
+      padding:0.5rem 0.75rem;
+      border-radius:8px;
+      width:260px; max-width:90%;
+      box-shadow:0 4px 12px rgba(0,0,0,0.5);
+      z-index:20;
+      display:none;
+      position:relative; /* voor close-knop */
+    }
+    #formContainer h2 {
+      margin:0 0 0.5rem; font-size:1.1rem; text-align:center;
+    }
+    #formContainer label {
+      font-size:0.9rem; display:block; margin-top:0.4rem;
+    }
+    #formContainer input,
+    #formContainer textarea {
+      width:100%; background:#111; border:1px solid #444;
+      border-radius:4px; padding:0.3rem; margin:0.3rem 0 0.6rem;
+      box-sizing:border-box; color:#fff;
+    }
+    #formContainer input::placeholder,
+    #formContainer textarea::placeholder { color:#aaa; }
+    #formContainer button[type="submit"] {
+      width:100%; background:#fff; color:#000; border:none;
+      border-radius:4px; padding:0.4rem; cursor:pointer;
+      font-weight:bold; margin-top:0.4rem;
+    }
+    #formContainer button[type="submit"]:hover { background:#eee; }
+
+    /* Sluitknop in de hoek van het formulier */
+    #formContainer .close-btn {
+      position:absolute; top:0.3rem; right:0.3rem;
+      background:transparent; border:none; color:#fff;
+      font-size:1.2rem; cursor:pointer; line-height:1;
+      padding:0; user-select:none;
+    }
+    #formContainer .close-btn:hover,
+    #formContainer .close-btn:focus {
+      outline:none; background:transparent;
+    }
+
+    /* Autocomplete dropdown boven de kaart */
+    .pac-container { z-index:10000 !important; }
+  </style>
 </head>
 <body>
   <div id="map"></div>
@@ -15,17 +83,47 @@
   </div>
 
   <div id="formContainer">
-    <h2>Voeg een Chill Spot toe</h2>
-    <input type="text" id="name" placeholder="Naam van de spot" required />
-    <textarea id="description" placeholder="Beschrijving" required></textarea>
-    <input id="autocomplete" type="text" placeholder="Typ een locatie" autocomplete="off" required />
-    <input type="hidden" id="lat" />
-    <input type="hidden" id="lng" />
-    <button id="submitBtn">Toevoegen</button>
+    <button class="close-btn" id="closeForm">&times;</button>
+    <h2>Nieuwe Chill Spot</h2>
+    <form id="spotForm" action="https://formspree.io/f/mjkwvzbv" method="POST">
+      <label for="name">Naam</label>
+      <input type="text" name="name" id="name" placeholder="Naam van de spot" required />
+
+      <label for="description">Beschrijving</label>
+      <textarea name="description" id="description" placeholder="Beschrijving" rows="2" required></textarea>
+
+      <label for="autocomplete">Locatie</label>
+      <input name="location" id="autocomplete" type="text" placeholder="Typ locatie" autocomplete="off" required />
+      <input type="hidden" name="lat" id="lat" />
+      <input type="hidden" name="lng" id="lng" />
+
+      <label for="photo">Foto URL (optioneel)</label>
+      <input type="url" name="photo" id="photo" placeholder="https://..." />
+
+      <button type="submit">Verstuur</button>
+    </form>
     <div id="formMsg"></div>
   </div>
 
   <script src="main.js" defer></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDs-2R2Fsqb_JUa98FPgo1hIOu5_GEf0NE&libraries=places&callback=initMap" async defer></script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDs-2R2Fsqb_JUa98FPgo1hIOu5_GEf0NE&libraries=places&callback=initMap"
+    async defer
+  ></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const addBtn       = document.getElementById("addBtn");
+      const formContainer= document.getElementById("formContainer");
+      const closeForm    = document.getElementById("closeForm");
+
+      addBtn.addEventListener("click", () => {
+        formContainer.style.display = "block";
+      });
+      closeForm.addEventListener("click", () => {
+        formContainer.style.display = "none";
+      });
+    });
+  </script>
 </body>
 </html>
