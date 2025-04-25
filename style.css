@@ -1,4 +1,6 @@
-/* === Global & Map === */
+/* style.css */
+
+/* === Fullscreen Kaart === */
 html, body {
   margin: 0;
   padding: 0;
@@ -6,7 +8,6 @@ html, body {
   overflow: hidden;
   font-family: sans-serif;
 }
-
 #map {
   position: absolute;
   top: 0;
@@ -16,7 +17,7 @@ html, body {
   z-index: 0;
 }
 
-/* === Header === */
+/* === Header met Logo, Zoek & Add === */
 .overlay-top {
   position: absolute;
   top: 0;
@@ -24,18 +25,79 @@ html, body {
   width: 100%;
   background: #000;
   color: #fff;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
   padding: 1rem 0;
   z-index: 10;
 }
-.overlay-top button {
+
+/* Logo styling (iets kleiner) */
+#logo {
+  max-height: 2.5rem;
+  width: auto;
+}
+
+/* Container voor zoekveld + knop */
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Zoekveld */
+.search-container {
+  position: relative;
+}
+.search-container input[type="text"] {
   background: #000;
   color: #fff;
   border: 1px solid #fff;
   border-radius: 6px;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.6rem;
+  width: 180px;
+}
+
+/* Suggesties dropdown */
+.suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: rgba(0,0,0,0.9);
+  border: 1px solid #fff;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 11;
+}
+.suggestions.hidden {
+  display: none;
+}
+.suggestion-item {
+  padding: 0.4rem 0.6rem;
+  color: #fff;
   cursor: pointer;
-  margin-left: 1rem;
+  font-size: 0.9rem;
+}
+.suggestion-item:hover {
+  background: #333;
+}
+
+/* Add Spot knop */
+#addBtn {
+  background: #000;
+  color: #fff;
+  border: 1px solid #fff;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+}
+#addBtn:hover {
+  background: #fff;
+  color: #000;
 }
 
 /* === Compact Form Overlay === */
@@ -44,7 +106,7 @@ html, body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0,0,0,0.9);
   color: #fff;
   padding: 0.5rem 0.75rem;
   border-radius: 8px;
@@ -53,7 +115,7 @@ html, body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
   z-index: 20;
   display: none;
-  position: relative; /* voor close-knop */
+  position: relative;
 }
 #formContainer h2 {
   margin: 0 0 0.5rem;
@@ -94,8 +156,6 @@ html, body {
 #formContainer button[type="submit"]:hover {
   background: #eee;
 }
-
-/* Close-knop in de hoek */
 #formContainer .close-btn {
   position: absolute;
   top: 0.3rem;
@@ -109,18 +169,16 @@ html, body {
   padding: 0;
   user-select: none;
 }
-#formContainer .close-btn:hover,
-#formContainer .close-btn:focus {
+#formContainer .close-btn:hover {
   outline: none;
-  background: transparent;
 }
 
-/* Autocomplete dropdown */
+/* === Autocomplete dropdown boven alle UI === */
 .pac-container {
   z-index: 10000 !important;
 }
 
-/* === Override voor Google Maps InfoWindow === */
+/* === Override Google Maps InfoWindow (volledig zwart) === */
 .gm-style .gm-style-iw {
   background: none !important;
   box-shadow: none !important;
@@ -132,29 +190,7 @@ html, body {
   display: none !important;
 }
 .gm-style .gm-style-iw > div {
-  background-color: rgba(0, 0, 0, 0.9) !important;
-  border-radius: 8px !important;
-  padding: 0 !important;
-  width: 280px !important;
-  pointer-events: auto !important;
-}
-.gm-style .gm-style-iw * {
-  pointer-events: auto !important;
-}
-
-/* === Override voor Google Maps InfoWindow === */
-.gm-style .gm-style-iw {
-  background: none !important;
-  box-shadow: none !important;
-  border: none !important;
-  pointer-events: auto !important;
-}
-.gm-style .gm-style-iw:before,
-.gm-style .gm-style-iw:after {
-  display: none !important;
-}
-.gm-style .gm-style-iw > div {
-  background-color: rgba(0, 0, 0, 0.9) !important;
+  background-color: rgba(0,0,0,0.9) !important;
   border-radius: 8px !important;
   padding: 0 !important;
   width: 300px !important;
@@ -164,7 +200,7 @@ html, body {
   pointer-events: auto !important;
 }
 
-/* === Styles voor content binnen InfoWindow === */
+/* === InfoWindow Content Styling === */
 .info-window {
   padding: 1rem;
   max-width: 300px;
@@ -194,5 +230,4 @@ html, body {
   color: #fff;
   text-decoration: underline;
   font-size: 0.9rem;
-  cursor: pointer;
 }

@@ -1,6 +1,6 @@
 // main.js
 
-// 1) Hier zet je alle door jou goedgekeurde spots (met manual address)
+// 1) Manueel goedgekeurde spots
 const approvedSpots = [
   {
     name: 'Grote Markt Brussel',
@@ -18,29 +18,36 @@ const approvedSpots = [
     photo: 'https://link-naar-foto-2.jpg',
     address: 'Citadelpark, 9000 Gent, België'
   }
-  // … voeg hier je volgende goedgekeurde spots toe …
 ];
 
-let map, autocomplete, infoWindow;
+let map, autocomplete, infoWindow, markersList = [];
 
 function initMap() {
+  // 1) Kaart initialiseren
   map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: 50.8503, lng: 4.3517 },
     zoom: 10,
     minZoom: 2
   });
 
+  // 2) InfoWindow
   infoWindow = new google.maps.InfoWindow();
 
-  // Sluit de infowindow bij een klik op de kaart
-  map.addListener("click", () => {
-    infoWindow.close();
+  // 3) Sluit infoWindow bij kaart-klik
+  map.addListener("click", () => infoWindow.close());
+
+  // 4) Markers aanmaken
+  approvedSpots.forEach(spot => {
+    const marker = new google.maps.Marker({
+      position: { lat: spot.lat, lng: spot.lng },
+      map,
+      title: spot.name
+    });
+    markersList.push({ marker, spot });
+    marker.addListener("click", () => showInfo(marker, spot));
   });
 
-  // Voeg alleen je manueel goedgekeurde spots toe
-  approvedSpots.forEach(addMarker);
-
-  // Autocomplete setup voor het formulier (Formspree)
+  // 5) Autocomplete voor formulier
   autocomplete = new google.maps.places.Autocomplete(
     document.getElementById("autocomplete")
   );
@@ -51,58 +58,90 @@ function initMap() {
     document.getElementById("lat").value = place.geometry.location.lat();
     document.getElementById("lng").value = place.geometry.location.lng();
   });
+
+  // 6) Live search & suggesties
+  const searchInput   = document.getElementById("searchInput");
+  const suggestionsEl = document.getElementById("suggestions");
+
+  searchInput.addEventListener("input", e => {
+    const term = e.target.value.toLowerCase().trim();
+
+    // filter markers zonder kaartaanpassingen
+    markersList.forEach(({ marker, spot }) => {
+      const hay = (spot.name + " " + spot.description + " " + spot.address).toLowerCase();
+      marker.setMap(!term || hay.includes(term) ? map : null);
+    });
+
+    // suggestielijst
+    const matches = approvedSpots
+      .map(s => s.name)
+      .filter(name => name.toLowerCase().includes(term));
+
+    if (term && matches.length) {
+      suggestionsEl.innerHTML = matches
+        .slice(0, 10)
+        .map(name => `<div class="suggestion-item">${name}</div>`)
+        .join("");
+      suggestionsEl.classList.remove("hidden");
+    } else {
+      suggestionsEl.classList.add("hidden");
+    }
+  });
+
+  suggestionsEl.addEventListener("click", e => {
+    const item = e.target.closest(".suggestion-item");
+    if (!item) return;
+    const val = item.textContent;
+    searchInput.value = val;
+    suggestionsEl.classList.add("hidden");
+
+    // opnieuw filteren
+    const term = val.toLowerCase().trim();
+    markersList.forEach(({ marker, spot }) => {
+      const hay = (spot.name + " " + spot.description + " " + spot.address).toLowerCase();
+      marker.setMap(!term || hay.includes(term) ? map : null);
+    });
+  });
+
+  document.addEventListener("click", e => {
+    if (!e.target.closest(".search-container")) {
+      suggestionsEl.classList.add("hidden");
+    }
+  });
 }
 
-function addMarker(spot) {
-  const marker = new google.maps.Marker({
-    position: { lat: spot.lat, lng: spot.lng },
-    map,
-    title: spot.name
-  });
-
-  marker.addListener("click", () => {
-    // Bouw custom InfoWindow-content
-    let content = `<div class="info-window">`;
-    if (spot.photo) {
-      content += `
-        <a href="${spot.photo}" target="_blank" rel="noopener">
-          <img src="${spot.photo}" class="info-img" alt="${spot.name}">
+function showInfo(marker, spot) {
+  let content = `<div class="info-window">`;
+  if (spot.photo) {
+    content += `
+      <a href="${spot.photo}" target="_blank" rel="noopener">
+        <img src="${spot.photo}" class="info-img" alt="${spot.name}">
+      </a>
+    `;
+  }
+  content += `<h3>${spot.name}</h3>`;
+  content += `<p>${spot.description}</p>`;
+  if (spot.address) {
+    const navUrl = `https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}`;
+    content += `
+      <p class="address">
+        <a href="${navUrl}" target="_blank" rel="noopener">
+          ${spot.address}
         </a>
-      `;
-    }
-    content += `<h3>${spot.name}</h3>`;
-    content += `<p>${spot.description}</p>`;
-
-    if (spot.address) {
-      // Link opent navigatie naar lat,lng in Google Maps
-      const navUrl =
-        `https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}`;
-      content += `
-        <p class="address">
-          <a href="${navUrl}" target="_blank" rel="noopener">
-            ${spot.address}
-          </a>
-        </p>
-      `;
-    }
-
-    content += `</div>`;
-
-    infoWindow.setContent(content);
-    infoWindow.open(map, marker);
-  });
+      </p>
+    `;
+  }
+  content += `</div>`;
+  infoWindow.setContent(content);
+  infoWindow.open(map, marker);
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  // Form toggle logic
-  const addBtn       = document.getElementById("addBtn");
-  const formContainer= document.getElementById("formContainer");
-  const closeForm    = document.getElementById("closeForm");
-
-  addBtn.addEventListener("click", () => {
-    formContainer.style.display = "block";
+  // **Belangrijk**: hiermee werkt Add-Spot weer!
+  document.getElementById("addBtn").addEventListener("click", () => {
+    document.getElementById("formContainer").style.display = "block";
   });
-  closeForm.addEventListener("click", () => {
-    formContainer.style.display = "none";
+  document.getElementById("closeForm").addEventListener("click", () => {
+    document.getElementById("formContainer").style.display = "none";
   });
 });
