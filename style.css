@@ -1,11 +1,15 @@
-/* === Fullscreen Kaart === */
-html, body {
+/* style.css */
+
+/* === Fullscreen kaart === */
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
   overflow: hidden;
   font-family: sans-serif;
 }
+
 #map {
   position: absolute;
   top: 0;
@@ -13,6 +17,12 @@ html, body {
   width: 100%;
   height: 100%;
   z-index: 0;
+}
+
+/* Map grijs/freeze enkel bij About actief */
+body.about-active #map {
+  filter: grayscale(100%);
+  pointer-events: none;
 }
 
 /* === Header met Logo, Zoek & Add === */
@@ -23,6 +33,8 @@ html, body {
   width: 100%;
   background: #000;
   color: #fff;
+
+  /* terug naar kolom lay-out zodat logo bovenaan center staat */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -31,24 +43,26 @@ html, body {
   z-index: 10;
 }
 
-/* Logo styling (iets kleiner) */
+/* Logo styling (kleiner indien gewenst) */
 #logo {
   max-height: 2.5rem;
   width: auto;
 }
 
-/* Container voor zoekveld + knop */
+/* Container voor zoekveld + knop + About */
 .header-controls {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  /* onder logo plaatsen, gecentreerd dankzij overlay-top */
 }
 
 /* Zoekveld */
 .search-container {
   position: relative;
 }
-.search-container input[type="text"] {
+
+.search-container input {
   background: #000;
   color: #fff;
   border: 1px solid #fff;
@@ -57,13 +71,12 @@ html, body {
   width: 180px;
 }
 
-/* Suggesties dropdown */
 .suggestions {
   position: absolute;
   top: 100%;
   left: 0;
   width: 100%;
-  background: rgba(0,0,0,0.9);
+  background: rgba(0, 0, 0, 0.9);
   border: 1px solid #fff;
   border-top: none;
   border-radius: 0 0 6px 6px;
@@ -71,15 +84,18 @@ html, body {
   overflow-y: auto;
   z-index: 11;
 }
+
 .suggestions.hidden {
   display: none;
 }
+
 .suggestion-item {
   padding: 0.4rem 0.6rem;
   color: #fff;
   cursor: pointer;
   font-size: 0.9rem;
 }
+
 .suggestion-item:hover {
   background: #333;
 }
@@ -93,6 +109,7 @@ html, body {
   padding: 0.4rem 0.8rem;
   cursor: pointer;
 }
+
 #addBtn:hover {
   background: #fff;
   color: #000;
@@ -101,13 +118,14 @@ html, body {
 /* About-link knop */
 .about-link {
   text-decoration: none;
-  padding: 8px 12px;
+  padding: 0.4rem 0.8rem;
   background: #000;
   border: 1px solid #fff;
   border-radius: 6px;
   color: #fff;
-  font-size: 14px;
+  font-size: 0.9rem;
 }
+
 .about-link:hover {
   background: #fff;
   color: #000;
@@ -119,27 +137,29 @@ html, body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(0,0,0,0.9);
+  background: rgba(0, 0, 0, 0.9);
   color: #fff;
   padding: 0.5rem 0.75rem;
   border-radius: 8px;
   width: 260px;
   max-width: 90%;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   z-index: 20;
   display: none;
-  position: relative;
 }
+
 #formContainer h2 {
+  text-align: center;
   margin: 0 0 0.5rem;
   font-size: 1.1rem;
-  text-align: center;
 }
+
 #formContainer label {
-  font-size: 0.9rem;
   display: block;
   margin-top: 0.4rem;
+  font-size: 0.9rem;
 }
+
 #formContainer input,
 #formContainer textarea {
   width: 100%;
@@ -148,13 +168,10 @@ html, body {
   border-radius: 4px;
   padding: 0.3rem;
   margin: 0.3rem 0 0.6rem;
-  box-sizing: border-box;
   color: #fff;
+  box-sizing: border-box;
 }
-#formContainer input::placeholder,
-#formContainer textarea::placeholder {
-  color: #aaa;
-}
+
 #formContainer button[type="submit"] {
   width: 100%;
   background: #fff;
@@ -166,9 +183,11 @@ html, body {
   font-weight: bold;
   margin-top: 0.4rem;
 }
+
 #formContainer button[type="submit"]:hover {
   background: #eee;
 }
+
 #formContainer .close-btn {
   position: absolute;
   top: 0.3rem;
@@ -178,46 +197,141 @@ html, body {
   color: #fff;
   font-size: 1.2rem;
   cursor: pointer;
-  line-height: 1;
-  padding: 0;
-  user-select: none;
 }
+
 #formContainer .close-btn:hover {
   outline: none;
 }
 
-/* === Autocomplete dropdown boven alle UI === */
+/* === About-overlay === */
+.about-container {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 800px;
+  max-height: calc(100% - 4rem);
+  overflow-y: auto;
+  background: #fff;
+  color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 20;
+}
+
+.about-container.hidden {
+  display: none;
+}
+
+/* About content */
+.about-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.about-header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.highlight {
+  color: #4CAF50;
+}
+
+.about-header p {
+  margin-top: 0.5rem;
+}
+
+.about-section {
+  margin-bottom: 2rem;
+}
+
+.about-section h2 {
+  margin: 1rem 0 0.5rem;
+  font-size: 1.4rem;
+  color: #222;
+}
+
+.about-section ul {
+  padding-left: 1.5rem;
+}
+
+.about-section p,
+.about-section li {
+  line-height: 1.5;
+}
+
+.support-link {
+  display: inline-block;
+  margin-top: 1rem;
+  background: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.support-link:hover {
+  background: #45a049;
+}
+
+.about-footer {
+  text-align: center;
+  margin-top: 3rem;
+  font-size: 0.95rem;
+}
+
+.back-link {
+  background: #000;
+  color: #fff;
+  border: 1px solid #fff;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+}
+
+.back-link:hover {
+  background: #fff;
+  color: #000;
+}
+
+/* Autocomplete dropdown boven alle UI */
 .pac-container {
   z-index: 10000 !important;
 }
 
-/* === Override Google Maps InfoWindow (volledig zwart) === */
-.gm-style .gm-style-iw {
-  background: none !important;
-  box-shadow: none !important;
-  border: none !important;
-  pointer-events: auto !important;
-}
-.gm-style .gm-style-iw:before,
-.gm-style .gm-style-iw:after {
-  display: none !important;
-}
-.gm-style .gm-style-iw > div {
-  background-color: rgba(0,0,0,0.9) !important;
-  border-radius: 8px !important;
-  padding: 0 !important;
-  width: 300px !important;
-  pointer-events: auto !important;
-}
+/* Override Google Maps InfoWindow (volledig zwart) */
+.gm-style .gm-style-iw,
 .gm-style .gm-style-iw * {
   pointer-events: auto !important;
 }
 
-/* === InfoWindow Content Styling === */
+.gm-style .gm-style-iw {
+  background: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.gm-style .gm-style-iw:before,
+.gm-style .gm-style-iw:after {
+  display: none !important;
+}
+
+.gm-style .gm-style-iw>div {
+  background: rgba(0, 0, 0, 0.9) !important;
+  border-radius: 8px !important;
+  padding: 0 !important;
+  width: 300px !important;
+}
+
 .info-window {
   padding: 1rem;
   max-width: 300px;
 }
+
 .info-window .info-img {
   width: 100%;
   height: 120px;
@@ -226,51 +340,25 @@ html, body {
   margin-bottom: 0.6rem;
   cursor: pointer;
 }
+
 .info-window h3 {
   margin: 0 0 0.5rem;
   font-size: 1.3rem;
   color: #fff;
 }
+
 .info-window p {
   margin: 0.4rem 0;
   font-size: 1.05rem;
   color: #fff;
 }
+
 .info-window .address {
   margin-top: 0.6rem;
 }
+
 .info-window .address a {
   color: #fff;
   text-decoration: underline;
   font-size: 0.9rem;
-}
-
-/* === About Pagina Styling === */
-.about-container {
-  max-width: 800px;
-  margin: 80px auto 20px;
-  padding: 20px;
-  font-family: sans-serif;
-  line-height: 1.6;
-}
-
-.about-container h1, .about-container h2 {
-  margin-bottom: 10px;
-}
-
-.about-container ul {
-  padding-left: 20px;
-}
-
-.support-link {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 10px 15px;
-  background: #f0f0f0;
-  border-radius: 5px;
-  text-decoration: none;
-}
-
-.support-link:hover {
-  background: #e0e0e0;
 }
