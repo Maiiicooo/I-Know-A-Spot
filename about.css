@@ -1,0 +1,89 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background: #f9f9f9;
+    color: #333;
+  }
+  
+  .overlay-top {
+    background: #000;
+    padding: 1rem 0;
+    text-align: center;
+  }
+  
+  #logo {
+    max-height: 2.5rem;
+    width: auto;
+  }
+  
+  .about-container {
+    max-width: 800px;
+    margin: 80px auto 20px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  .about-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .about-header .highlight {
+    color: #4CAF50;
+  }
+  
+  .about-section {
+    margin-bottom: 2rem;
+  }
+  
+  .about-section h2 {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+    color: #222;
+  }
+  
+  .about-section ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+  }
+  
+  .support {
+    text-align: center;
+  }
+  
+  .support-link {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .support-link:hover {
+    background: #45a049;
+  }
+  
+  .about-footer {
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 0.95rem;
+  }
+  
+  .back-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: #4CAF50;
+    text-decoration: none;
+  }
+  
+  .back-link:hover {
+    text-decoration: underline;
+  }
+  
