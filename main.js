@@ -14,7 +14,15 @@ const approvedSpots = [
     lat: 51.0520, lng: 3.7174,
     photo: 'https://link-naar-foto-2.jpg',
     address: 'Citadelpark, 9000 Gent, België'
-  }
+  },
+
+  {
+    name: 'Japanse Tuin',
+    description: 'De Japanse Tuin in Hasselt is een van de grootste Japanse tuinen in Europa.',
+    lat: 50.937531, lng: 5.353040,
+    photo: 'https://www.klasse.be/wp/wp-content/uploads/2016/09/japanse-tuin-hasselt.jpg',
+    address: 'Gouverneur Verwilghensingel 15, 3500 Hasselt'
+  },
 ];
 
 let map, autocomplete, infoWindow, markersList = [];
