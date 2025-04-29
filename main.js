@@ -11,7 +11,7 @@ const approvedSpots = [
   {
     name: 'Citadelpark Gent',
     description: 'Rustige plek bij het water en veel groen.',
-    lat: 51.0520, lng: 3.7174,
+    lat: 51.0374558, lng: 3.7192784,
     photo: 'https://link-naar-foto-2.jpg',
     address: 'Citadelpark, 9000 Gent, België'
   },
